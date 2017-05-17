@@ -7,6 +7,7 @@ mod diff;
 use self::diff::DiffFinder;
 use error::Error;
 use config::FileConfig;
+use telegram::Telegram;
 
 
 pub struct LogWatcher {
@@ -14,9 +15,10 @@ pub struct LogWatcher {
     notifyer: RecommendedWatcher,
     receiver: mpsc::Receiver<DebouncedEvent>,
     diff_finder: DiffFinder,
+    telegram: Telegram,
 }
 impl LogWatcher {
-    pub fn new(files: Vec<FileConfig>) -> Result<LogWatcher, Error> {
+    pub fn new(files: Vec<FileConfig>, tg: Telegram) -> Result<LogWatcher, Error> {
         let (tx, rx) = mpsc::channel();
         let watcher: RecommendedWatcher = Watcher::new(tx, Duration::from_secs(1))?;
 
@@ -25,6 +27,7 @@ impl LogWatcher {
             notifyer: watcher,
             receiver: rx,
             diff_finder: DiffFinder::new(files)?,
+            telegram: tg,
         })
     }
     pub fn watch(&mut self) -> Result<(), Error> {
@@ -47,7 +50,7 @@ impl LogWatcher {
         };
         let diff = self.diff_finder.find(path)?;
         match diff {
-            Some(diff) => println!("{:?} > {:?}", path, diff),
+            Some(diff) => self.telegram.send(path, diff)?,
             None => {}
         };
 

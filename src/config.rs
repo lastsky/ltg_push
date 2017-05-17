@@ -7,11 +7,17 @@ use error::Error;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
+    pub telegram: TelegramConfig,
     pub files: Vec<FileConfig>,
 }
 #[derive(Debug, Clone, Deserialize)]
 pub struct FileConfig {
     pub path: String,
+}
+#[derive(Debug, Deserialize)]
+pub struct TelegramConfig {
+    pub bot: String,
+    pub chat_id: String,
 }
 impl Config {
     pub fn from_file(filename: &str) -> Result<Config, Error> {
