@@ -9,7 +9,7 @@ use error::Error;
 pub struct Config {
     pub files: Vec<FileConfig>,
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct FileConfig {
     pub path: String,
 }
