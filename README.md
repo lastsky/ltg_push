@@ -8,5 +8,7 @@
 
 ## Config
 ```yaml
-filename: error.log  # path to watching file
+files: # paths to watching files
+  - path: /var/some/log
+  - path: /var/awesome/log
 ```

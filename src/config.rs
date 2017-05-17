@@ -7,7 +7,11 @@ use error::Error;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    pub filename: String,
+    pub files: Vec<FileConfig>,
+}
+#[derive(Debug, Deserialize)]
+pub struct FileConfig {
+    pub path: String,
 }
 impl Config {
     pub fn from_file(filename: &str) -> Result<Config, Error> {

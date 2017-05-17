@@ -7,3 +7,4 @@ authors = ["Maxim Lis <ralvke@gmail.com>"]
 serde = "*"
 serde_derive = "*"
 serde_yaml = "*"
+notify = "*"
