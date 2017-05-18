@@ -6,10 +6,10 @@
 3. `cargo build --release`
 4. Write config
 5. Get chat ID
-  1. Create bot
-  2. Send any message to bot
-  3. `ltg_push <custom path to config file> getChatID`
-  4. Put received chat id to config
+    1. Create bot
+    2. Send any message to bot
+    3. `ltg_push <custom path to config file> getChatID`
+    4. Put received chat id to config
 6. `ltg_push <custom path to config file>`
 
 ## Config
