@@ -39,11 +39,14 @@ impl DiffFinder {
             None => return Err(Error::Text(format!("could not find file {} in diff finder", path))),
         };
 
+        let new_len = fs::metadata(&path)?.len();
         let mut file = File::open(path)?;
         let mut buffer = String::new();
-        file.seek(SeekFrom::Start(seek))?;
-        file.read_to_string(&mut buffer)?;
+        if seek < new_len {
+            file.seek(SeekFrom::Start(seek))?;
+        }
 
+        file.read_to_string(&mut buffer)?;
         self.update_seek(path.to_owned())?;
 
         if buffer == String::new() {
