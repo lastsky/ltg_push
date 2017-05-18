@@ -52,7 +52,7 @@ impl LogWatcher {
 
         match diff {
             Some(diff) => {
-                let message = format!("*{}*\n\n```{}```", path, diff);
+                let message = format!("*{}*\n```\n{}```", path, diff);
                 self.telegram.send(message)?
             }
             None => {}
