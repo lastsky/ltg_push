@@ -30,8 +30,18 @@ fn main() {
         return;
     };
 
-    let mut lw = LogWatcher::new(cfg.files, tg).unwrap();
-    lw.watch().unwrap();
+    tg.send(format!("Started")).unwrap();
+    let mut lw = match LogWatcher::new(cfg.files, tg.clone()) {
+        Ok(lw) => lw,
+        Err(e) => {
+            tg.send(format!("*Internal error:* {:?}", e)).unwrap();
+            return;
+        }
+    };
+    match lw.watch() {
+        Ok(()) => {}
+        Err(e) => tg.send(format!("*Internal error:* {:?}", e)).unwrap(),
+    };
 }
 
 fn config_filename_or_die() -> String {

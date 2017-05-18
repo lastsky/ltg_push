@@ -1,6 +1,6 @@
+use serde_yaml;
 use std::fs::File;
 use std::io::prelude::*;
-use serde_yaml;
 
 use error::Error;
 
@@ -14,7 +14,7 @@ pub struct Config {
 pub struct FileConfig {
     pub path: String,
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct TelegramConfig {
     pub bot: String,
     pub chat_id: String,

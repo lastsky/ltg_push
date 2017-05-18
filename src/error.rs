@@ -1,10 +1,10 @@
-use std::io;
 use serde_yaml;
 use notify;
 use hyper;
 use hyper_native_tls::native_tls;
 use url;
 use serde_json;
+use std::io;
 
 
 #[derive(Debug)]

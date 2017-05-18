@@ -4,13 +4,15 @@ use hyper_native_tls::NativeTlsClient;
 use url::Url;
 use serde_json;
 use std::io::prelude::*;
+use std::sync::Arc;
 
 use config::TelegramConfig;
 use error::Error;
 
 
+#[derive(Clone)]
 pub struct Telegram {
-    client: hyper::Client,
+    client: Arc<hyper::Client>,
     config: TelegramConfig,
 }
 impl Telegram {
@@ -20,13 +22,11 @@ impl Telegram {
         let client = hyper::Client::with_connector(connector);
 
         Ok(Telegram {
-            client: client,
+            client: Arc::new(client),
             config: config,
         })
     }
-    pub fn send(&self, path: &str, diff: String) -> Result<(), Error> {
-        let message = format!("**{}**\n\n{}", path, diff);
-
+    pub fn send(&self, message: String) -> Result<(), Error> {
         let turl = format!("https://api.telegram.org/bot{}/sendMessage",
                            self.config.bot);
         let mut turl = Url::parse(&turl)?;

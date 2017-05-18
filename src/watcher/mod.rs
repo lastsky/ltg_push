@@ -39,7 +39,7 @@ impl LogWatcher {
             match self.receiver.recv() {
                 Ok(DebouncedEvent::Write(path)) => self.notify(path)?,
                 Ok(_) => {}
-                Err(e) => println!("watch error: {:?}", e),
+                Err(e) => println!("Error: {:?}", e),
             }
         }
     }
@@ -49,8 +49,12 @@ impl LogWatcher {
             None => return Err(Error::Text(format!("could not find path"))),
         };
         let diff = self.diff_finder.find(path)?;
+
         match diff {
-            Some(diff) => self.telegram.send(path, diff)?,
+            Some(diff) => {
+                let message = format!("*{}*\n{}", path, diff);
+                self.telegram.send(message)?
+            }
             None => {}
         };
 
