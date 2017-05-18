@@ -2,6 +2,9 @@
 name = "ltg_push"
 version = "0.1.0"
 authors = ["Maxim Lis <ralvke@gmail.com>"]
+description = "Push log files updates to Telegram"
+license = "MIT"
+repository = "https://github.com/Ralvke/ltg_push"
 
 [dependencies]
 serde = "*"
