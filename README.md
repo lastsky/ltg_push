@@ -1,4 +1,5 @@
-# ltg_push - Push log files updates to Telegram
+# ltg_push [![crates.io](https://img.shields.io/crates/v/ltg_push.svg)](https://crates.io/crates/ltg_push)
+Push log files' updates to Telegram
 
 ## Use
 1. Install Rust
