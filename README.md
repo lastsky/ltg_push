@@ -21,3 +21,9 @@ files: # paths to watching files
   - path: /var/some/log
   - path: /var/awesome/other_log
 ```
+
+## Systemd service
+1. Copy `ltg_push.service` to `/etc/systemd/system`
+2. `systemctl daemon-reload`
+3. Copy `ltg_push` to `/usr/bin`
+4. Copy config to `/etc/ltg_push.yml`

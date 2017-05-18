@@ -1,0 +1,10 @@
+[Unit]
+Description=Push log files updates to Telegram
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ltg_push /etc/ltg_push.yml
+
+[Install]
+WantedBy=multi-user.target
