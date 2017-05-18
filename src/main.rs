@@ -34,13 +34,13 @@ fn main() {
     let mut lw = match LogWatcher::new(cfg.files, tg.clone()) {
         Ok(lw) => lw,
         Err(e) => {
-            tg.send(format!("*Internal error:* {:?}", e)).unwrap();
+            tg.send(format!("*Internal error:* {:?}.\nStopped", e)).unwrap();
             return;
         }
     };
     match lw.watch() {
         Ok(()) => {}
-        Err(e) => tg.send(format!("*Internal error:* {:?}", e)).unwrap(),
+        Err(e) => tg.send(format!("*Internal error:* {:?}.\nStopped", e)).unwrap(),
     };
 }
 

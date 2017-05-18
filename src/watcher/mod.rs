@@ -38,6 +38,7 @@ impl LogWatcher {
         loop {
             match self.receiver.recv() {
                 Ok(DebouncedEvent::Write(path)) => self.notify(path)?,
+                Ok(DebouncedEvent::Remove(path)) => self.notify_remove(path)?,
                 Ok(_) => {}
                 Err(e) => println!("Error: {:?}", e),
             }
@@ -57,6 +58,17 @@ impl LogWatcher {
             }
             None => {}
         };
+
+        Ok(())
+    }
+    fn notify_remove(&mut self, path: PathBuf) -> Result<(), Error> {
+        let path = match path.to_str() {
+            Some(path) => path,
+            None => return Err(Error::Text(format!("could not find path"))),
+        };
+
+        let message = format!("Watching file *{}* stopped (file removed)", path);
+        self.telegram.send(message)?;
 
         Ok(())
     }
