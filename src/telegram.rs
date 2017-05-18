@@ -46,9 +46,48 @@ impl Telegram {
 
         Ok(())
     }
+    pub fn chat_id(&self) -> Result<i32, Error> {
+        let turl = format!("https://api.telegram.org/bot{}/getUpdates", self.config.bot);
+
+        let mut response = self.client.get(&turl).send()?;
+        let mut buffer = String::new();
+        response.read_to_string(&mut buffer)?;
+        let mut response: TelegramGetID = serde_json::from_str(&buffer)?;
+
+        if !response.ok {
+            return Err(Error::Text(format!("Telegram response not ok: {}", buffer)));
+        }
+
+        let id = match response.result.pop() {
+            Some(result) => result.message.chat.id,
+            None => {
+                return Err(Error::Text(format!("could not get result from response: {}", buffer)))
+            }
+        };
+
+        Ok(id)
+    }
 }
 
 #[derive(Deserialize)]
 struct TelegramResponse {
     ok: bool,
+}
+
+#[derive(Deserialize)]
+struct TelegramGetID {
+    ok: bool,
+    result: Vec<TelegramGetIDResult>,
+}
+#[derive(Deserialize)]
+struct TelegramGetIDResult {
+    message: TelegramGetIDMessage,
+}
+#[derive(Deserialize)]
+struct TelegramGetIDMessage {
+    chat: TelegramGetIDChat,
+}
+#[derive(Deserialize)]
+struct TelegramGetIDChat {
+    id: i32,
 }
