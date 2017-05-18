@@ -20,6 +20,7 @@ telegram:
     chat_id: 123456789 # chat id (see Use.5)
 files: # paths to watching files
   - path: /var/some/log
+    match: "critical" # push updates only with this regex
   - path: /var/awesome/other_log
 ```
 

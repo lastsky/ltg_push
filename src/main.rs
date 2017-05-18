@@ -6,6 +6,7 @@ extern crate notify;
 extern crate hyper;
 extern crate hyper_native_tls;
 extern crate url;
+extern crate regex;
 
 use std::env;
 use std::process;
@@ -34,13 +35,13 @@ fn main() {
     let mut lw = match LogWatcher::new(cfg.files, tg.clone()) {
         Ok(lw) => lw,
         Err(e) => {
-            tg.send(format!("*Internal error:* {:?}.\nStopped", e)).unwrap();
+            tg.send(format!("*Internal error:* {:?}.\n\nStopped", e)).unwrap();
             return;
         }
     };
     match lw.watch() {
         Ok(()) => {}
-        Err(e) => tg.send(format!("*Internal error:* {:?}.\nStopped", e)).unwrap(),
+        Err(e) => tg.send(format!("*Internal error:* {:?}.\n\nStopped", e)).unwrap(),
     };
 }
 

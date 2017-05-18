@@ -4,6 +4,7 @@ use hyper;
 use hyper_native_tls::native_tls;
 use url;
 use serde_json;
+use regex;
 use std::io;
 
 
@@ -17,6 +18,7 @@ pub enum Error {
     Hyper(hyper::Error),
     Tls(native_tls::Error),
     Url(url::ParseError),
+    Regex(regex::Error),
 }
 impl From<String> for Error {
     fn from(e: String) -> Self {
@@ -56,5 +58,10 @@ impl From<native_tls::Error> for Error {
 impl From<url::ParseError> for Error {
     fn from(e: url::ParseError) -> Self {
         Error::Url(e)
+    }
+}
+impl From<regex::Error> for Error {
+    fn from(e: regex::Error) -> Self {
+        Error::Regex(e)
     }
 }

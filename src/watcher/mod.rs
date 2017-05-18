@@ -4,7 +4,9 @@ use std::time::Duration;
 use std::path::PathBuf;
 
 mod diff;
+mod matcher;
 use self::diff::DiffFinder;
+use self::matcher::Matcher;
 use error::Error;
 use config::FileConfig;
 use telegram::Telegram;
@@ -16,6 +18,7 @@ pub struct LogWatcher {
     receiver: mpsc::Receiver<DebouncedEvent>,
     diff_finder: DiffFinder,
     telegram: Telegram,
+    matcher: Matcher,
 }
 impl LogWatcher {
     pub fn new(files: Vec<FileConfig>, tg: Telegram) -> Result<LogWatcher, Error> {
@@ -26,8 +29,9 @@ impl LogWatcher {
             files: files.to_vec(),
             notifyer: watcher,
             receiver: rx,
-            diff_finder: DiffFinder::new(files)?,
+            diff_finder: DiffFinder::new(files.to_vec())?,
             telegram: tg,
+            matcher: Matcher::new(files)?,
         })
     }
     pub fn watch(&mut self) -> Result<(), Error> {
@@ -53,8 +57,10 @@ impl LogWatcher {
 
         match diff {
             Some(diff) => {
-                let message = format!("*{}*\n```\n{}```", path, diff);
-                self.telegram.send(message)?
+                if self.matcher.is_matches(path, diff.clone()) {
+                    let message = format!("*{}*\n```\n{}```", path, diff);
+                    self.telegram.send(message)?
+                }
             }
             None => {}
         };

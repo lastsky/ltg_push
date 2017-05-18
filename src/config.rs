@@ -13,6 +13,8 @@ pub struct Config {
 #[derive(Debug, Clone, Deserialize)]
 pub struct FileConfig {
     pub path: String,
+    #[serde(rename = "match")]
+    pub regex: Option<String>,
 }
 #[derive(Debug, Clone, Deserialize)]
 pub struct TelegramConfig {
