@@ -1,4 +1,4 @@
-# ltg_push [![crates.io](https://img.shields.io/crates/v/ltg_push.svg)](https://crates.io/crates/ltg_push)
+# ltg_push [![crates.io](https://img.shields.io/crates/v/ltg_push.svg)](https://crates.io/crates/ltg_push) [![travis-ci.org](https://api.travis-ci.org/Ralvke/ltg_push.svg?branch=master)](https://travis-ci.org/Ralvke/ltg_push)
 Push log files' updates to Telegram
 
 ## Use
