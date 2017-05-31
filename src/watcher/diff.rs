@@ -41,14 +41,15 @@ impl DiffFinder {
 
         let new_len = fs::metadata(&path)?.len();
         let mut file = File::open(path)?;
-        let mut buffer = String::new();
+        let mut buffer = Vec::new();
         if seek < new_len {
             file.seek(SeekFrom::Start(seek))?;
         }
 
-        file.read_to_string(&mut buffer)?;
+        file.read_to_end(&mut buffer)?;
         self.update_seek(path.to_owned())?;
 
+        let buffer = String::from_utf8_lossy(&buffer).into_owned();
         if buffer == String::new() {
             Ok(None)
         } else {

@@ -59,15 +59,12 @@ impl LogWatcher {
         };
         let diff = self.diff_finder.find(path)?;
 
-        match diff {
-            Some(diff) => {
-                if self.matcher.is_matches(path, diff.clone()) {
-                    let message = format!("*{}*\n```\n{}```", path, diff);
-                    self.telegram.send(message)?
-                }
+        if let Some(diff) = diff {
+            if self.matcher.is_matches(path, diff.clone()) {
+                let message = format!("*{}*\n```\n{}```", path, diff);
+                self.telegram.send(message)?
             }
-            None => {}
-        };
+        }
 
         Ok(())
     }
