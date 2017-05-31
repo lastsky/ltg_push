@@ -1,6 +1,6 @@
 [package]
 name = "ltg_push"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Maxim Lis <ralvke@gmail.com>"]
 description = "Push log files updates to Telegram"
 license = "MIT"
