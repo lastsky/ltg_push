@@ -1,6 +1,5 @@
-use notify::{RecommendedWatcher, Watcher, RecursiveMode, DebouncedEvent};
+use notify::{RecommendedWatcher, Watcher, RecursiveMode, RawEvent, op};
 use std::sync::mpsc;
-use std::time::Duration;
 use std::path::PathBuf;
 
 mod diff;
@@ -15,7 +14,7 @@ use telegram::Telegram;
 pub struct LogWatcher {
     files: Vec<FileConfig>,
     notifyer: RecommendedWatcher,
-    receiver: mpsc::Receiver<DebouncedEvent>,
+    receiver: mpsc::Receiver<RawEvent>,
     diff_finder: DiffFinder,
     telegram: Telegram,
     matcher: Matcher,
@@ -23,7 +22,7 @@ pub struct LogWatcher {
 impl LogWatcher {
     pub fn new(files: Vec<FileConfig>, tg: Telegram) -> Result<LogWatcher, Error> {
         let (tx, rx) = mpsc::channel();
-        let watcher: RecommendedWatcher = Watcher::new(tx, Duration::from_secs(1))?;
+        let watcher: RecommendedWatcher = Watcher::new_raw(tx)?;
 
         Ok(LogWatcher {
             files: files.to_vec(),
@@ -36,15 +35,20 @@ impl LogWatcher {
     }
     pub fn watch(&mut self) -> Result<(), Error> {
         for file in &self.files {
-            self.notifyer.watch(&file.path, RecursiveMode::NonRecursive)?;
+            self.notifyer.watch(&file.path, RecursiveMode::Recursive)?;
         }
 
         loop {
             match self.receiver.recv() {
-                Ok(DebouncedEvent::Write(path)) => self.notify(path)?,
-                Ok(DebouncedEvent::Remove(path)) => self.notify_remove(path)?,
+                Ok(RawEvent { path: Some(path), op: Ok(opb), cookie: _ }) => {
+                    match opb {
+                        op::WRITE => self.notify(path)?,
+                        op::REMOVE => self.notify_remove(path)?,
+                        _ => {}
+                    }
+                }
                 Ok(_) => {}
-                Err(e) => println!("Error: {:?}", e),
+                Err(e) => return Err(Error::Recv(e)),
             }
         }
     }

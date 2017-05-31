@@ -6,6 +6,7 @@ use url;
 use serde_json;
 use regex;
 use std::io;
+use std::sync::mpsc;
 
 
 #[derive(Debug)]
@@ -19,6 +20,7 @@ pub enum Error {
     Tls(native_tls::Error),
     Url(url::ParseError),
     Regex(regex::Error),
+    Recv(mpsc::RecvError),
 }
 impl From<String> for Error {
     fn from(e: String) -> Self {
@@ -63,5 +65,10 @@ impl From<url::ParseError> for Error {
 impl From<regex::Error> for Error {
     fn from(e: regex::Error) -> Self {
         Error::Regex(e)
+    }
+}
+impl From<mpsc::RecvError> for Error {
+    fn from(e: mpsc::RecvError) -> Self {
+        Error::Recv(e)
     }
 }
